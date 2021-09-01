@@ -160,11 +160,12 @@ class Board extends React.Component {
     //console.log(title);
     return (
       <div>
-        <head className="header">
+        <head>
+          <title>Online Chess</title>
+        </head>
+        <body className="header">
           <h1>Online Chess</h1>
           <p>{title}</p>
-        </head>
-        <body>
           <div className="game">
             <div className="wrapper">{this.renderBoard()}</div>
           </div>

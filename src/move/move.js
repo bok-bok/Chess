@@ -114,7 +114,7 @@ export const checkFirstMove = (board, r, c) => {
 };
 
 // check available spot to move
-export const checkAvailable = (r, c, board, player, mode) => {
+export const checkAvailable = (r, c, board, previousBoard, player, mode) => {
   //console.log("checkAvailable :" + mode);
   const kindColor = board[r][c];
   if (kindColor === 0) {
@@ -125,7 +125,7 @@ export const checkAvailable = (r, c, board, player, mode) => {
   let result;
 
   if (kind === "pawn") {
-    result = pawn(r, c, board, color, player);
+    result = pawn(r, c, board, previousBoard, color, player, mode);
   } else if (kind === "kight") {
     result = kight(r, c, board, color);
   } else if (kind === "rook") {

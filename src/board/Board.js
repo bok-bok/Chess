@@ -9,6 +9,7 @@ class Board extends React.Component {
   constructor() {
     super();
     this.state = {
+      previousBoard: board,
       turn: "white",
       board: board,
       player: "black",
@@ -28,7 +29,7 @@ class Board extends React.Component {
     let turn = this.state.turn;
     // get current col and row
     const curRowCol = this.state.currentRowCol;
-
+    console.log("clicked-----------------------------------------");
     // if current row and col are exist get
 
     if (curRowCol.length !== 0) {
@@ -47,9 +48,11 @@ class Board extends React.Component {
         r,
         c,
         this.state.board,
+        this.state.previousBoard,
         this.state.player,
         "main"
       );
+
       this.setState({ currentRowCol: [r, c], availableMoves: available });
       return;
     }
@@ -63,6 +66,7 @@ class Board extends React.Component {
         r,
         c,
         this.state.board,
+        this.state.previousBoard,
         this.state.player,
         "main"
       );
@@ -75,6 +79,7 @@ class Board extends React.Component {
       title = turn + "'s turn";
 
       this.setState({ title: title });
+      this.setState({ previousBoard: this.state.board });
       this.setState({
         board: makeMove(
           r,

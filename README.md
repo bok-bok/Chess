@@ -8,5 +8,4 @@ toy project creating chess with react
 
 ---
 
-- implements en passant
 - implements AI

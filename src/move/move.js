@@ -86,16 +86,22 @@ const swapPosition = (
   let newBoard = JSON.parse(JSON.stringify(board));
   const start = newBoard[startRow][startCol];
   const target = newBoard[targetRow][targetCol];
+  newBoard[targetRow][targetCol] = start;
+  newBoard[startRow][startCol] = 0;
+  let playerNum;
+  player === "white" ? (playerNum = 1) : (playerNum = 0);
+  const color = start[1];
 
-  if (Array.isArray(target)) {
-    newBoard[targetRow][targetCol] = start;
-    newBoard[startRow][startCol] = 0;
-  } else {
-    newBoard[startRow][startCol] = target;
-    newBoard[targetRow][targetCol] = start;
+  // check en passant move
+  // check pawn moved diagonal to empty space
+  if (start[0] === 1 && target === 0 && startCol !== targetCol) {
+    // check player and color
+    if (playerNum === color) {
+      newBoard[targetRow + 1][targetCol] = 0;
+    } else {
+      newBoard[targetRow - 1][targetCol] = 0;
+    }
   }
-
-  // if move make the king check do not move
 
   // if pawn reach the end, it evolutes to queen
   newBoard = checkPawnEvolution(newBoard, start, targetRow, targetCol, player);

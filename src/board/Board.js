@@ -138,6 +138,67 @@ class Board extends React.Component {
     return false;
   }
 
+  // make new game
+  newGame() {
+    console.log("newGame");
+    const player = this.state.player;
+    if (player === "white") {
+      var newBoard = this.rotateBoard(board);
+    }
+    this.setState({
+      previousBoard: newBoard,
+      turn: "white",
+      board: newBoard,
+      player: player,
+      availableMoves: [],
+      currentRowCol: [],
+      title: player + "'s turn",
+      gameStatus: true,
+      whiteCatched: [],
+      blackCatched: []
+    });
+  }
+
+  //rotate board
+  rotateBoard(board) {
+    let ret = [...Array(8)].map((e) => Array(8));
+    for (let i = 0; i < board.length; ++i) {
+      for (let j = 0; j < board.length; ++j) {
+        ret[i][board.length - 1 - j] = board[board.length - 1 - i][j];
+      }
+    }
+
+    return ret;
+  }
+  // change player
+  changePlayer(e) {
+    const playerToChange = e.target.innerText.toLowerCase();
+    if (playerToChange === this.state.player) {
+      alert("nothing to change");
+      return;
+    }
+    let newBoard;
+    if (playerToChange === "white") {
+      newBoard = this.rotateBoard(board);
+    } else {
+      newBoard = board;
+    }
+
+    const player = this.state.player;
+    this.setState({
+      previousBoard: newBoard,
+      turn: "white",
+      board: newBoard,
+      player: playerToChange,
+      availableMoves: [],
+      currentRowCol: [],
+      title: player + "'s turn",
+      gameStatus: true,
+      whiteCatched: [],
+      blackCatched: []
+    });
+  }
+
   // function that render a board
   renderBoard = () => {
     return this.state.board.map((row, r) =>
@@ -164,15 +225,17 @@ class Board extends React.Component {
     const title = this.state.title;
     //console.log(title);
     return (
-      <div>
-        <head>
-          <title>Online Chess</title>
-        </head>
+      <html>
         <body className="header">
           <h1>Online Chess</h1>
           <p>{title}</p>
           <div className="game">
             <div className="wrapper">{this.renderBoard()}</div>
+          </div>
+          <div className="buttons">
+            <button onClick={(e) => this.changePlayer(e)}>White</button>
+            <button onClick={(e) => this.changePlayer(e)}>Black</button>
+            <button onClick={() => this.newGame()}>New Game</button>
           </div>
         </body>
         <footer>
@@ -181,7 +244,7 @@ class Board extends React.Component {
             &#169;2021. Kyungbok Lee. ALL RIGHT RESERVED.
           </p>
         </footer>
-      </div>
+      </html>
     );
   }
 }

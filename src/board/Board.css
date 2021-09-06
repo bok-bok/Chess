@@ -39,6 +39,8 @@ button:active {
   background: #345b63;
   color: white;
   border-radius: 5px;
+
+  font-weight: bold;
 }
 
 .buttons {
@@ -53,3 +55,25 @@ button:active {
   font-weight: 500;
   font-size: 1rem;
 }
+
+footer {
+  font-family: sans-serif;
+}
+
+.game {
+  display: flex;
+}
+
+.player,
+.ai {
+  margin: 0 50px;
+  font-family: sans-serif;
+  font-size: 20px;
+}
+
+.player {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+/*for small screen*/

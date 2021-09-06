@@ -3,6 +3,7 @@ import React from "react";
 import checkAvailable from "../move/move";
 import Pieces from "../pieces/Pieces";
 import board from "../assets/initialBoard";
+import Minimax from "../AI/Minimax";
 //import rules from "../rules/rules";
 import { makeMove } from "../move/move";
 class Board extends React.Component {
@@ -18,7 +19,8 @@ class Board extends React.Component {
       title: "white's turn",
       gameStatus: true,
       whiteCatched: [],
-      blackCatched: []
+      blackCatched: [],
+      AImode: false
     };
   }
 
@@ -140,10 +142,12 @@ class Board extends React.Component {
 
   // make new game
   newGame() {
-    console.log("newGame");
+    let newBoard;
     const player = this.state.player;
     if (player === "white") {
-      var newBoard = this.rotateBoard(board);
+      newBoard = this.rotateBoard(board);
+    } else {
+      newBoard = board;
     }
     this.setState({
       previousBoard: newBoard,
@@ -221,29 +225,68 @@ class Board extends React.Component {
     );
   };
 
+  AITurn = () => {
+    let nextTurn;
+    this.state.turn === "white" ? (nextTurn = "black") : (nextTurn = "white");
+    const newBoard = Minimax(
+      this.state.board,
+      this.state.previousBoard,
+      this.state.turn,
+      this.state.player,
+      this.changeTitle
+    );
+
+    this.setState({ previousBoard: this.state.board });
+    this.setState({
+      board: newBoard,
+      turn: nextTurn,
+      title: nextTurn + "'s turn"
+    });
+  };
+
+  AImodeButtonClicked = () => {
+    this.setState({ AImode: !this.state.AImode });
+  };
+
   render() {
     const title = this.state.title;
-    //console.log(title);
+    if (this.state.player !== this.state.turn && this.state.AImode) {
+      this.AITurn();
+    }
+    let AIButtonTitle;
+    this.state.AImode
+      ? (AIButtonTitle = "Normal Mode")
+      : (AIButtonTitle = "AI Mode");
+    console.log(AIButtonTitle);
     return (
       <html>
         <body className="header">
-          <h1>Online Chess</h1>
+          <h1>Chess</h1>
           <p>{title}</p>
           <div className="game">
+            <div className="ai">
+              <p>AI</p>
+            </div>
             <div className="wrapper">{this.renderBoard()}</div>
+            <div className="player">
+              <p>Player</p>
+            </div>
           </div>
           <div className="buttons">
             <button onClick={(e) => this.changePlayer(e)}>White</button>
             <button onClick={(e) => this.changePlayer(e)}>Black</button>
             <button onClick={() => this.newGame()}>New Game</button>
+            <button onClick={() => this.AImodeButtonClicked()}>
+              {AIButtonTitle}
+            </button>
           </div>
+          <footer>
+            <p className="footer">
+              {" "}
+              &#169;2021. Kyungbok Lee. ALL RIGHT RESERVED.
+            </p>
+          </footer>
         </body>
-        <footer>
-          <p className="footer">
-            {" "}
-            &#169;2021. Kyungbok Lee. ALL RIGHT RESERVED.
-          </p>
-        </footer>
       </html>
     );
   }

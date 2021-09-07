@@ -33,7 +33,7 @@ button:active {
 }
 
 /*button style*/
-.buttons button {
+.blueButton {
   border: 0;
   padding: 15px 10px;
   background: #345b63;
@@ -74,6 +74,30 @@ footer {
 .player {
   display: flex;
   flex-direction: column-reverse;
+}
+
+.overlayButton {
+  margin: 10rem;
+}
+
+.overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 500px;
+  left: 500px;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  transition: 0.3s linear;
+}
+.overlay.is-open {
+  opacity: 1;
+  visibility: visible;
 }
 
 /*for small screen*/

@@ -4,6 +4,8 @@ import checkAvailable from "../move/move";
 import Pieces from "../pieces/Pieces";
 import board from "../assets/initialBoard";
 import Minimax from "../AI/Minimax";
+import RandomMoveAI from "../AI/RandomMove";
+
 //import rules from "../rules/rules";
 import { makeMove } from "../move/move";
 class Board extends React.Component {
@@ -20,12 +22,14 @@ class Board extends React.Component {
       gameStatus: true,
       whiteCatched: [],
       blackCatched: [],
-      AImode: false
+      AImode: false,
+      AI: null,
+      showOverlay: false
     };
   }
 
   BOARDLEN = 8;
-
+  AI = ["Random", "Minimax"];
   // get row and col value of piece
   pieceClickedHandler = (r, c, isAvailable) => {
     let turn = this.state.turn;
@@ -225,16 +229,36 @@ class Board extends React.Component {
     );
   };
 
+  overLayClicked = () => {
+    this.setState({ showOverlay: false });
+  };
+
+  AITypeButtonClicked = (e) => {
+    this.setState({ AI: e.target.innerText, AImode: !this.state.AImode });
+  };
+
   AITurn = () => {
+    const AIType = this.state.AI;
     let nextTurn;
     this.state.turn === "white" ? (nextTurn = "black") : (nextTurn = "white");
-    const newBoard = Minimax(
-      this.state.board,
-      this.state.previousBoard,
-      this.state.turn,
-      this.state.player,
-      this.changeTitle
-    );
+    let newBoard;
+    if (AIType === "Random") {
+      newBoard = RandomMoveAI(
+        this.state.board,
+        this.state.previousBoard,
+        this.state.turn,
+        this.state.player,
+        this.changeTitle
+      );
+    } else if (AIType === "Minimax") {
+      newBoard = Minimax(
+        this.state.board,
+        this.state.previousBoard,
+        this.state.turn,
+        this.state.player,
+        this.changeTitle
+      );
+    }
 
     this.setState({ previousBoard: this.state.board });
     this.setState({
@@ -245,38 +269,89 @@ class Board extends React.Component {
   };
 
   AImodeButtonClicked = () => {
-    this.setState({ AImode: !this.state.AImode });
+    if (!this.state.AImode) {
+      this.setState({ showOverlay: true });
+    } else {
+      this.setState({ AImode: false });
+    }
+    this.newGame();
   };
 
   render() {
+    // title
     const title = this.state.title;
+
+    // if aI mode and ai's turn make ai move
     if (this.state.player !== this.state.turn && this.state.AImode) {
       this.AITurn();
     }
+
+    // button title
     let AIButtonTitle;
     this.state.AImode
       ? (AIButtonTitle = "Normal Mode")
       : (AIButtonTitle = "AI Mode");
-    console.log(AIButtonTitle);
+
+    // overlay
+    let overlay;
+    if (this.state.showOverlay) {
+      overlay = (
+        <div onClick={() => this.overLayClicked()} className="overlay">
+          <button
+            onClick={(e) => this.AITypeButtonClicked(e)}
+            className="blueButton overlayButton"
+          >
+            Random
+          </button>
+          <button
+            onClick={(e) => this.AITypeButtonClicked(e)}
+            className="blueButton overlayButton"
+          >
+            Minimax
+          </button>
+        </div>
+      );
+    } else {
+      overlay = "";
+    }
+
     return (
       <html>
         <body className="header">
+          {overlay}
           <h1>Chess</h1>
           <p>{title}</p>
           <div className="game">
             <div className="ai">
               <p>AI</p>
             </div>
+
             <div className="wrapper">{this.renderBoard()}</div>
+
             <div className="player">
               <p>Player</p>
             </div>
           </div>
           <div className="buttons">
-            <button onClick={(e) => this.changePlayer(e)}>White</button>
-            <button onClick={(e) => this.changePlayer(e)}>Black</button>
-            <button onClick={() => this.newGame()}>New Game</button>
-            <button onClick={() => this.AImodeButtonClicked()}>
+            <button
+              className="blueButton"
+              onClick={(e) => this.changePlayer(e)}
+            >
+              White
+            </button>
+            <button
+              className="blueButton"
+              onClick={(e) => this.changePlayer(e)}
+            >
+              Black
+            </button>
+            <button className="blueButton" onClick={() => this.newGame()}>
+              New Game
+            </button>
+            <button
+              className="blueButton"
+              onClick={() => this.AImodeButtonClicked()}
+            >
               {AIButtonTitle}
             </button>
           </div>

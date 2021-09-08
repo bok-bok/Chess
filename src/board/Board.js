@@ -315,6 +315,14 @@ class Board extends React.Component {
       overlay = "";
     }
 
+    // AI and Player className
+    let AIClass = "hidden";
+    let playerClass = "hidden";
+    if (this.state.AImode) {
+      AIClass = "ai";
+      playerClass = "player";
+    }
+
     return (
       <html>
         <body className="header">
@@ -322,13 +330,13 @@ class Board extends React.Component {
           <h1>Chess</h1>
           <p>{title}</p>
           <div className="game">
-            <div className="ai">
+            <div className={AIClass}>
               <p>AI</p>
             </div>
 
             <div className="wrapper">{this.renderBoard()}</div>
 
-            <div className="player">
+            <div className={playerClass}>
               <p>Player</p>
             </div>
           </div>

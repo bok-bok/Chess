@@ -14,6 +14,10 @@ body {
   grid-auto-flow: row;
 }
 
+.hidden {
+  display: none;
+}
+
 .header {
   font-family: serif;
   display: flex;

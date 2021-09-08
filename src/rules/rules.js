@@ -65,7 +65,14 @@ const isCheckHelper = (board, row, col, color, kingIdx, player) => {
   const piece = board[row][col];
   // piece is not blank and color is different
   if (piece !== 0 && piece[1] !== color) {
-    const availableMoves = checkAvailable(row, col, board, player, "notMain");
+    const availableMoves = checkAvailable(
+      row,
+      col,
+      board,
+      [],
+      player,
+      "notMain"
+    );
     for (let move of availableMoves) {
       //check
       if (move[0] === kingIdx[0] && move[1] === kingIdx[1]) {
@@ -91,16 +98,18 @@ export const isCheckMate = (board, color, player) => {
   const col = kingIdx[1];
 
   const CannotDodge = canKingDodge(row, col, board, color, player);
-  console.log("section 1 ");
+
   if (!CannotDodge) {
+    console.log("king can dodge");
     return false;
   }
+  console.log("king cannot dodge");
   // 2. check can any piece protect king by block the way or attack the enemy
   for (let r = 0; r < board.length; r++) {
     for (let c = 0; c < board.length; c++) {
       const piece = board[r][c];
       if (piece !== 0 && piece[1] === color) {
-        const moves = checkAvailable(r, c, board, player);
+        const moves = checkAvailable(r, c, board, [], player);
         for (let move of moves) {
           const targetRow = move[0];
           const targetCol = move[1];
@@ -108,13 +117,14 @@ export const isCheckMate = (board, color, player) => {
           const notCheck = isCheckSafe(newBoard, player, color);
 
           if (notCheck) {
+            console.log("other piece can block or attack enemy");
             return false;
           }
         }
       }
     }
   }
-
+  console.log("check mate");
   return true;
 };
 
@@ -157,7 +167,7 @@ const getEnemyMove = (board, color, player) => {
     for (let col = 0; col < board.length; col++) {
       const piece = board[row][col];
       if (piece !== 0 && piece[1] !== color) {
-        const moves = checkAvailable(row, col, board, player);
+        const moves = checkAvailable(row, col, board, [], player);
 
         for (let move of moves) {
           enemyMoves.add(move);

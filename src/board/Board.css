@@ -1,3 +1,7 @@
+:root {
+  --titleColor: white;
+}
+
 body {
   background-color: #152d35;
   color: white;
@@ -104,4 +108,7 @@ footer {
   visibility: visible;
 }
 
-/*for small screen*/
+/*title color*/
+.title {
+  color: var(--titleColor);
+}

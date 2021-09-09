@@ -32,12 +32,16 @@ class Board extends React.Component {
   AI = ["Random", "Minimax"];
   // get row and col value of piece
   pieceClickedHandler = (r, c, isAvailable) => {
+    // check game is end
+    if (!this.state.gameStatus) {
+      return;
+    }
     let turn = this.state.turn;
     // get current col and row
     const curRowCol = this.state.currentRowCol;
     console.log("clicked-----------------------------------------");
     // if current row and col are exist get
-
+    console.log("current row col: " + curRowCol);
     if (curRowCol.length !== 0) {
       var curRow = curRowCol[0];
       var curCol = curRowCol[1];
@@ -45,11 +49,12 @@ class Board extends React.Component {
       // when it is new move
       // check player is following the right turn
       if (!this.checkTurn(r, c, turn)) {
+        console.log("wrong");
         return;
       }
 
       // update curRowCol if it is right turn
-
+      console.log("check available");
       const available = checkAvailable(
         r,
         c,
@@ -58,7 +63,12 @@ class Board extends React.Component {
         this.state.player,
         "main"
       );
-
+      console.log(available);
+      if (available === undefined || available.length === 0) {
+        this.changeTitle("Player should move another piece!", "red", true);
+      } else {
+        this.changeTitle(turn + "'s turn", "white", true);
+      }
       this.setState({ currentRowCol: [r, c], availableMoves: available });
       return;
     }
@@ -76,6 +86,11 @@ class Board extends React.Component {
         this.state.player,
         "main"
       );
+      if (available === undefined || available.length === 0) {
+        this.changeTitle("Player should move another piece!", "red", true);
+      } else {
+        this.changeTitle(turn + "'s turn", "white", true);
+      }
       this.setState({ availableMoves: available, currentRowCol: [r, c] });
     } else {
       // make a move and update
@@ -83,7 +98,7 @@ class Board extends React.Component {
 
       turn === "black" ? (turn = "white") : (turn = "black");
       title = turn + "'s turn";
-
+      document.documentElement.style.setProperty("--titleColor", "white");
       this.setState({ title: title });
       this.setState({ previousBoard: this.state.board });
       this.setState({
@@ -105,10 +120,9 @@ class Board extends React.Component {
     }
   };
 
-  changeTitle = (color) => {
-    const title = "checkmate! " + color + " win!";
-
-    this.setState({ title: title, gameStatus: false });
+  changeTitle = (title, titleColor, gameStatus) => {
+    document.documentElement.style.setProperty("--titleColor", titleColor);
+    this.setState({ title: title, gameStatus: gameStatus });
   };
 
   checkTurn = (r, c, turn) => {
@@ -328,7 +342,7 @@ class Board extends React.Component {
         <body className="header">
           {overlay}
           <h1>Chess</h1>
-          <p>{title}</p>
+          <p className="title">{title}</p>
           <div className="game">
             <div className={AIClass}>
               <p>AI</p>

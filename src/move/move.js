@@ -63,10 +63,13 @@ export const makeMove = (
     const curCheck = isCheckSafe(newBoard, player, enemyColorNum);
 
     if (isCheckMated) {
-      changeTitle(color);
+      const title = "checkmate! " + color + " win!";
+      changeTitle(title, "red", false);
       return newBoard;
     } else if (!curCheck) {
-      alert(color + " check " + enemyColor);
+      const title = "check!";
+      changeTitle(title, "red", true);
+
       return newBoard;
     }
   }
@@ -177,13 +180,13 @@ export const checkAvailable = (r, c, board, previousBoard, player, mode) => {
     }
     // if current board is check and piece cannot move, player should choose another piece to block it
     if (currentCheck && cantMove) {
-      alert("Check if you move it!");
+      //alert("Check if you move it!");
       return;
       // if current board is not check and piece cannot move
       // which mean player is trying to move the piece that is blocking the king from the check
       // Thus, player should move another piece
     } else if (!currentCheck && cantMove) {
-      alert("it is check. You should move another one");
+      //alert("it is check. You should move another one");
       return;
       // if piece can move return only safeMove
     } else if (!cantMove) {

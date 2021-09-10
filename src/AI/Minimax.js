@@ -1,63 +1,197 @@
 import { makeMove } from "../move/move";
-import { getAllMoves } from "./AI";
-const minimax = (board, previousBoard, AIColor, player, changeTitle) => {
-  let AIColorNum;
-  AIColor === "white" ? (AIColorNum = 1) : (AIColorNum = 0);
-  const allMovesOfEachPiece = getAllMoves(
-    board,
-    previousBoard,
-    AIColorNum,
-    player
-  );
+import { randomMove, getAllMoves } from "./AI";
 
-  const pieceNum = allMovesOfEachPiece.length;
-  let newBoard;
+const minimaxRoot = (
+  depth,
+  board,
+  previousBoard,
+  AIColorNum,
+  player,
+  turnColorNum,
+  changeTitle
+) => {
+  let newTurnColorNum;
+  turnColorNum === 1 ? (newTurnColorNum = 0) : (newTurnColorNum = 1);
+  // get player of this turn's all moves
+  const allMoves = getAllMoves(board, previousBoard, turnColorNum);
+  // loop all moves
+  let bestScore = -9999;
+  let bestMove;
+  for (let movesOfPiece of allMoves) {
+    for (let piece of movesOfPiece) {
+      const row = piece[0];
+      const col = piece[1];
+      const moves = piece[2];
+      // if piece cannot move make new move
+      if (moves === undefined || moves.length === 0) {
+        continue;
+      } else {
+        let newBoard;
+        // loop all move of a piece
 
-  // make random move function
-  while (true) {
-    const randomPiece = Math.floor(Math.random() * pieceNum);
-    const piece = allMovesOfEachPiece[randomPiece];
-
-    const row = piece[0];
-    const col = piece[1];
-    const moves = piece[2];
-    if (moves.length === 0) {
-      continue;
-    } else {
-      const randomMove = Math.floor(Math.random() * moves.length);
-      const move = moves[randomMove];
-      const targetRow = move[0];
-      const targetCol = move[1];
-      newBoard = makeMove(
-        targetRow,
-        targetCol,
-        row,
-        col,
-        board,
-        player,
-        "main",
-        changeTitle
-      );
+        for (let move of moves) {
+          const targetRow = move[0];
+          const targetCol = move[1];
+          newBoard = makeMove(
+            targetRow,
+            targetCol,
+            row,
+            col,
+            board,
+            player,
+            "main",
+            changeTitle
+          );
+          console.log(newBoard);
+          let tempScore = minimax(
+            depth - 1,
+            newBoard,
+            board,
+            AIColorNum,
+            player,
+            newTurnColorNum,
+            changeTitle
+          );
+          console.log(tempScore);
+          if (tempScore > bestScore) {
+            bestScore = tempScore;
+            bestMove = newBoard;
+          }
+        }
+      }
     }
-
-    break;
   }
-
-  return newBoard;
+  console.log(bestScore);
+  console.log(bestMove);
 };
 
-const evaluateBoard = (board, turnNum) => {
+const minimax = (
+  depth,
+  board,
+  previousBoard,
+  AIColorNum,
+  player,
+  turnColorNum,
+  changeTitle
+) => {
+  console.log(depth);
+  // update turn Color
+  let newTurnColorNum;
+  turnColorNum === 1 ? (newTurnColorNum = 0) : (newTurnColorNum = 1);
+
+  // return board score when it reaches the end
+  if (depth === 0) {
+    console.log("hi");
+    return evaluateBoard(board, AIColorNum);
+  }
+
+  // get player of this turn's all moves
+  const allMoves = getAllMoves(board, previousBoard, turnColorNum);
+
+  // it is checkMate if no availableMove for all piece
+  let checkMate = true;
+  for (let piece of allMoves) {
+    const move = piece[2];
+    if (move !== undefined && move.length !== 0) {
+      checkMate = false;
+      break;
+    }
+  }
+  if (checkMate) {
+    changeTitle("CheckMate! " + player + " win", "red", false);
+  }
+
+  // loop all moves
+  for (let movesOfPiece of allMoves) {
+    for (let piece of movesOfPiece) {
+      const row = piece[0];
+      const col = piece[1];
+      const moves = piece[2];
+      // if piece cannot move make new move
+      if (moves === undefined || moves.length === 0) {
+        continue;
+      } else {
+        let newBoard;
+        // loop all move of a piece
+
+        let bestScore;
+        if (AIColorNum === turnColorNum) {
+          // when AI's turn score should be maximized
+          bestScore = -9999;
+          for (let move of moves) {
+            const targetRow = move[0];
+            const targetCol = move[1];
+            newBoard = makeMove(
+              targetRow,
+              targetCol,
+              row,
+              col,
+              board,
+              player,
+              "main",
+              changeTitle
+            );
+
+            bestScore = Math.max(
+              minimax(
+                depth - 1,
+                newBoard,
+                board,
+                AIColorNum,
+                player,
+                newTurnColorNum,
+                changeTitle
+              )
+            );
+          }
+        } else {
+          // player's turn score should be minimized
+          bestScore = 9999;
+          for (let move of moves) {
+            const targetRow = move[0];
+            const targetCol = move[1];
+            newBoard = makeMove(
+              targetRow,
+              targetCol,
+              row,
+              col,
+              board,
+              player,
+              "main",
+              changeTitle
+            );
+
+            bestScore = Math.min(
+              minimax(
+                depth - 1,
+                newBoard,
+                board,
+                AIColorNum,
+                player,
+                newTurnColorNum,
+                changeTitle
+              )
+            );
+          }
+        }
+        return bestScore;
+      }
+    }
+  }
+};
+
+const evaluateBoard = (board, AIColorNum) => {
   //loop to evaluate
   let score;
   for (let row of board) {
     for (let element of row) {
-      score = score + evaluatePiece(element, turnNum);
+      score = score + evaluatePiece(element, AIColorNum);
     }
   }
   return score;
 };
 
-const evaluatePiece = (piece, turnNum) => {
+const evaluatePiece = (piece, AIColorNum) => {
   if (piece === 0) {
     return 0;
   }
@@ -85,11 +219,11 @@ const evaluatePiece = (piece, turnNum) => {
   };
   let score = evaluatePieceHelper(element);
 
-  if (turnNum === color) {
+  if (AIColorNum === color) {
     return score;
   } else {
     return -score;
   }
 };
 
-export default minimax;
+export default minimaxRoot;

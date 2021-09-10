@@ -138,11 +138,17 @@ class Board extends React.Component {
     return true;
   };
 
-  // copy board
-  copyBoard = () => {
-    const copyBoard = [...this.state.board];
-    return copyBoard;
+  // get game status
+
+  getGameStatus = () => {
+    return this.state.gameStatus;
   };
+
+  // // copy board
+  // copyBoard = () => {
+  //   const copyBoard = [...this.state.board];
+  //   return copyBoard;
+  // };
   //check row and col is in available move
   checkRowColInAvailableMoves(row, col) {
     if (!this.state.availableMoves) {
@@ -160,6 +166,7 @@ class Board extends React.Component {
 
   // make new game
   newGame() {
+    document.documentElement.style.setProperty("--titleColor", "white");
     let newBoard;
     const player = this.state.player;
     if (player === "white") {
@@ -174,7 +181,7 @@ class Board extends React.Component {
       player: player,
       availableMoves: [],
       currentRowCol: [],
-      title: player + "'s turn",
+      title: "white's turn",
       gameStatus: true,
       whiteCatched: [],
       blackCatched: []
@@ -256,20 +263,24 @@ class Board extends React.Component {
     let nextTurn;
     this.state.turn === "white" ? (nextTurn = "black") : (nextTurn = "white");
     let newBoard;
+    let AIColorNum;
+    this.state.turn === "white" ? (AIColorNum = 1) : (AIColorNum = 0);
     if (AIType === "Random") {
       newBoard = RandomMoveAI(
         this.state.board,
         this.state.previousBoard,
-        this.state.turn,
+        AIColorNum,
         this.state.player,
         this.changeTitle
       );
     } else if (AIType === "Minimax") {
       newBoard = Minimax(
+        2,
         this.state.board,
         this.state.previousBoard,
-        this.state.turn,
+        AIColorNum,
         this.state.player,
+        AIColorNum,
         this.changeTitle
       );
     }
@@ -295,8 +306,12 @@ class Board extends React.Component {
     // title
     const title = this.state.title;
 
-    // if aI mode and ai's turn make ai move
-    if (this.state.player !== this.state.turn && this.state.AImode) {
+    // if game is not finished, aI mode and ai's turn make ai move
+    if (
+      this.state.gameStatus &&
+      this.state.player !== this.state.turn &&
+      this.state.AImode
+    ) {
       this.AITurn();
     }
 

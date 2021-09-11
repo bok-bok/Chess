@@ -275,7 +275,7 @@ class Board extends React.Component {
       );
     } else if (AIType === "Minimax") {
       newBoard = Minimax(
-        2,
+        3,
         this.state.board,
         this.state.previousBoard,
         AIColorNum,

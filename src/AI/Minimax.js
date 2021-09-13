@@ -1,6 +1,7 @@
 import { makeMove } from "../move/move";
 import { getAllMoves } from "./AI";
-
+import evaluationPositionTable from "../assets/evaluationTable";
+import { PIECES } from "../assets/colorAndPieces";
 const minimaxRoot = (
   depth,
   board,
@@ -185,42 +186,54 @@ const evaluateBoard = (board, AIColorNum) => {
   //loop to evaluate
 
   let score = 0;
-  for (let row of board) {
-    for (let element of row) {
-      score = score + evaluatePiece(element, AIColorNum);
+  for (let row = 0; row < board.length; row++) {
+    for (let col = 0; col < board.length; col++) {
+      score = score + evaluatePiece(board[row][col], AIColorNum, row, col);
     }
   }
 
   return score;
 };
 
-const evaluatePiece = (piece, AIColorNum) => {
+const evaluatePiece = (piece, AIColorNum, row, col) => {
   if (piece === 0) {
     return 0;
   }
   const element = piece[0];
   const color = piece[1];
-  const evaluatePieceHelper = (element) => {
+
+  const evaluatePieceHelper = (element, row, col, color) => {
+    const elementString = PIECES[element];
+    let score = 0;
     if (element === 1) {
       // pawn
-      return 10;
+      score = 10;
     } else if (element === 2) {
       // bishop
-      return 30;
+      score = 30;
     } else if (element === 3) {
       //kight
-      return 30;
+      score = 30;
     } else if (element === 4) {
       //rook
-      return 50;
+      score = 50;
     } else if (element === 5) {
       //queen
-      return 90;
+      score = 90;
     } else if (element === 6) {
-      return 900;
+      score = 900;
     }
+    if (color !== AIColorNum) {
+      // console.log(elementString);
+      // console.log(evaluationPositionTable[elementString]);
+      score = score + evaluationPositionTable[elementString][row][col];
+    } else {
+      score = score + reverse(evaluationPositionTable[elementString])[row][col];
+    }
+
+    return score;
   };
-  let score = evaluatePieceHelper(element);
+  let score = evaluatePieceHelper(element, row, col, color);
 
   if (AIColorNum === color) {
     return score;
@@ -247,6 +260,10 @@ function shuffle(array) {
   }
 
   return array;
+}
+
+function reverse(array) {
+  return array.slice().reverse();
 }
 
 export default minimaxRoot;

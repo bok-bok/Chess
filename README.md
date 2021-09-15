@@ -1,11 +1,14 @@
-# Chess
+# Chess AI
 
----
+### Overview
 
-toy project creating chess with react
+Chess AI using minimax algorithm
 
-### todo
+### Feature
 
----
+- able to choose which algorithm to use
 
-- implements AI
+### Todo
+
+- [ ] apply alpha-beta prunning to minimax
+- [ ] add AI algorithm using deep learning

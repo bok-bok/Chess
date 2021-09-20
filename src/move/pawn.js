@@ -7,7 +7,6 @@ import {
 // check pawn's available move
 const pawn = (r, c, board, previousBoard, color, player, mode) => {
   const availableMoves = [];
-  //console.log(previousBoard);
   let colorNum;
   color === "white" ? (colorNum = 1) : (colorNum = 0);
   // check is pawn's move first move
@@ -74,8 +73,6 @@ const pawn = (r, c, board, previousBoard, color, player, mode) => {
         const piece = board[r][col];
         // check it is enemy pawn
         if (piece[0] === 1 && piece[1] !== colorNum) {
-          console.log("ColorNum: " + colorNum);
-          console.log("piece color: " + piece[1]);
           // check enemy pawn move two space as a first move
           let nr;
           if (color === player) {
@@ -85,9 +82,6 @@ const pawn = (r, c, board, previousBoard, color, player, mode) => {
           }
 
           if (checkIdxInBoard(nr, col)) {
-            console.log(previousBoard[nr][col]);
-            console.log(board[r][col]);
-
             if (
               previousBoard[nr][col][0] === board[r][col][0] &&
               previousBoard[nr][col][1] === board[r][col][1]

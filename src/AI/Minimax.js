@@ -55,9 +55,7 @@ const minimaxRoot = (
           newTurnColorNum,
           changeTitle
         );
-        console.log(tempScore);
         if (tempScore > bestScore) {
-          console.log("Updated best Score: " + tempScore);
           bestScore = tempScore;
           bestMove = newBoard;
         }
@@ -77,7 +75,6 @@ const minimax = (
   turnColorNum,
   changeTitle
 ) => {
-  console.log("minimax's depth: " + depth);
   // update turn Color
   let newTurnColorNum;
   turnColorNum === 1 ? (newTurnColorNum = 0) : (newTurnColorNum = 1);
@@ -224,8 +221,6 @@ const evaluatePiece = (piece, AIColorNum, row, col) => {
       score = 900;
     }
     if (color !== AIColorNum) {
-      // console.log(elementString);
-      // console.log(evaluationPositionTable[elementString]);
       score = score + evaluationPositionTable[elementString][row][col];
     } else {
       score = score + reverse(evaluationPositionTable[elementString])[row][col];

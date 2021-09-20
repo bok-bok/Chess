@@ -39,9 +39,7 @@ class Board extends React.Component {
     let turn = this.state.turn;
     // get current col and row
     const curRowCol = this.state.currentRowCol;
-    console.log("clicked-----------------------------------------");
     // if current row and col are exist get
-    console.log("current row col: " + curRowCol);
     if (curRowCol.length !== 0) {
       var curRow = curRowCol[0];
       var curCol = curRowCol[1];
@@ -49,12 +47,10 @@ class Board extends React.Component {
       // when it is new move
       // check player is following the right turn
       if (!this.checkTurn(r, c, turn)) {
-        console.log("wrong");
         return;
       }
 
       // update curRowCol if it is right turn
-      console.log("check available");
       const available = checkAvailable(
         r,
         c,
@@ -63,7 +59,6 @@ class Board extends React.Component {
         this.state.player,
         "main"
       );
-      console.log(available);
       if (available === undefined || available.length === 0) {
         this.changeTitle("Player should move another piece!", "red", true);
       } else {
@@ -131,7 +126,6 @@ class Board extends React.Component {
       const color = piece[1] === 1 ? "white" : "black";
       if (color !== turn) {
         // just return it if it is wrong turn
-        console.log("it is not " + color + "'s turn");
         return false;
       }
     }
@@ -313,6 +307,11 @@ class Board extends React.Component {
       this.state.AImode
     ) {
       this.AITurn();
+      if (this.state.gameStatus) {
+        let turn = "";
+        this.state.turn === "white" ? (turn = "black") : (turn = "white");
+        this.changeTitle(turn + "'s turn", "white", true);
+      }
     }
 
     // button title

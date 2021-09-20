@@ -14,12 +14,10 @@ export const checkPawnEvolution = (
 
     if (pawnColor === player) {
       if (targetRow === 0) {
-        console.log(pawnColor + "'s pawn became a queen");
         board[targetRow][targetCol] = [5, start[1]];
       }
     } else {
       if (targetRow === 7) {
-        console.log(pawnColor + "'s pawn became a queen");
         board[targetRow][targetCol] = [5, start[1]];
       }
     }
@@ -29,7 +27,6 @@ export const checkPawnEvolution = (
 
 export const isCheckSafe = (board, player, color) => {
   // find king's position
-  console.log("isCheckSafe");
 
   var kingIndex;
   loop1: for (let row = 0; row < board.length; row++) {
@@ -86,7 +83,6 @@ const isCheckHelper = (board, row, col, color, kingIdx, player) => {
 
 // checkmate
 export const isCheckMate = (board, color, player) => {
-  console.log("isCheckMate");
   if (isCheckSafe(board, player, color)) {
     return false;
   }
@@ -100,10 +96,8 @@ export const isCheckMate = (board, color, player) => {
   const CannotDodge = canKingDodge(row, col, board, color, player);
 
   if (!CannotDodge) {
-    console.log("king can dodge");
     return false;
   }
-  console.log("king cannot dodge");
   // 2. check can any piece protect king by block the way or attack the enemy
   for (let r = 0; r < board.length; r++) {
     for (let c = 0; c < board.length; c++) {
@@ -117,14 +111,12 @@ export const isCheckMate = (board, color, player) => {
           const notCheck = isCheckSafe(newBoard, player, color);
 
           if (notCheck) {
-            console.log("other piece can block or attack enemy");
             return false;
           }
         }
       }
     }
   }
-  console.log("check mate");
   return true;
 };
 

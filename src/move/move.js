@@ -124,7 +124,6 @@ export const checkFirstMove = (board, r, c) => {
 
 // check available spot to move
 export const checkAvailable = (r, c, board, previousBoard, player, mode) => {
-  //console.log("checkAvailable :" + mode);
   const kindColor = board[r][c];
   if (kindColor === 0) {
     return [];
